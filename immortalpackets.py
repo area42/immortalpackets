@@ -40,7 +40,7 @@ def display_num4(num,displays):
             else:
                 print("display %s, digit %d = %d : %s" % (d,i,i-dc,numstr[i]))
         if assume_i2cdisplay:
-            segment.write_display()
+            d.write_display()
         dc = dc+4
 
 while (True):
