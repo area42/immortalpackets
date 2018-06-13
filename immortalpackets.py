@@ -1,7 +1,7 @@
 import os
 import subprocess
 import platform
-import random 
+import random
 from time import sleep
 fake=True
 if platform.machine() == 'armv7l':
@@ -11,9 +11,11 @@ if platform.machine() == 'armv7l':
     d3 = SevenSegment.SevenSegment(address=0x71)
     displays = [d1,d2,d3]
     assume_i2cdisplay = True # naive but ok for now.
+    my_ip = subprocess.check_output(['hostname','-I']).rstrip()
 else:
     assume_i2cdisplay = False
     displays = ["d1","d2","d3"]
+    my_ip = "000.000.000.000"
 
 counter = 0
 
@@ -21,8 +23,7 @@ counter = 0
 def ping(host):
     is_up = False
     if fake:
-
-        sleep(random.uniform(5.0,35.0)/1000.0)
+        sleep(random.uniform(5.0,15.0)/1000.0)
         is_up = True
     else:
         with open(os.devnull, 'w') as DEVNULL:
@@ -37,8 +38,8 @@ def ping(host):
                     is_up = False
     return is_up
 
-def display_num4(num,displays):
-    numstr = " %12d" % num
+def display_str(str,displays):
+    numstr = "%12s          " % str
     dc = 0
     for d in displays:
         for i in range(dc+4,dc,-1):
@@ -50,6 +51,13 @@ def display_num4(num,displays):
             d.write_display()
         dc = dc+4
 
+def display_num4(num,displays):
+    numstr = " %12d" % num
+    display_str(numstr,displays)
+
+
+display_str(my_ip,displays)
+sleep(20)
 while (True):
     if ping("192.168.0.1"):
         counter = counter +1
