@@ -1,7 +1,9 @@
 import os
 import subprocess
 import platform
-
+import random 
+from time import sleep
+fake=True
 if platform.machine() == 'armv7l':
     from Adafruit_LED_Backpack import SevenSegment
     d1 = SevenSegment.SevenSegment(address=0x70)
@@ -18,16 +20,21 @@ counter = 0
 
 def ping(host):
     is_up = False
-    with open(os.devnull, 'w') as DEVNULL:
-        try:
-            subprocess.check_call(
-                ['ping', '-c', '1','-W','1','-n',host],
-                stdout=DEVNULL,  # suppress output
-                stderr=DEVNULL
-            )
-            is_up = True
-        except subprocess.CalledProcessError:
-                is_up = False
+    if fake:
+
+        sleep(random.uniform(5.0,35.0)/1000.0)
+        is_up = True
+    else:
+        with open(os.devnull, 'w') as DEVNULL:
+            try:
+                subprocess.check_call(
+                    ['ping', '-c', '1','-W','1','-n',host],
+                    stdout=DEVNULL,  # suppress output
+                    stderr=DEVNULL
+                )
+                is_up = True
+            except subprocess.CalledProcessError:
+                    is_up = False
     return is_up
 
 def display_num4(num,displays):
